@@ -106,7 +106,7 @@ namespace CRUDREACT.Models
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM People where idPeople < 10", conn);
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM People", conn);
 
                 using (var reader = cmd.ExecuteReader())
                 {

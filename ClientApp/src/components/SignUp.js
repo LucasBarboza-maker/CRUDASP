@@ -1,5 +1,6 @@
 ﻿import React, { Component, useState, useEffect } from 'react';
-
+import {Body, Header, Footer, SignUpLabel}  from '../Styles/SignUpStyle';
+import { createBrowserHistory } from 'history';
 
 function Home() {
 
@@ -10,7 +11,13 @@ function Home() {
     const [telephone, setTelephone] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
 
+    const history = createBrowserHistory({
+        forceRefresh: true
+    });
+
     function signUp() {
+
+    
 
         let data = {
             method: 'POST',
@@ -25,15 +32,34 @@ function Home() {
         }
         return fetch('people', data)
             .then(response => response.json())  // promise
+            .finally(() => {
+                alert('Usuário cadastrado');
+                history.push("/");
+            })
+    }
 
+    function goToHome() {
+       
+        history.push("/");
+    }
+
+    function goToSignUp(id) {
+       
+        history.push("/SignUp");
     }
 
 
     return (
-        <div>
-            <h1>Sign UP</h1>
+        <Body style={{backgroundColor:'#BEC4E1'}}>
+            <Header>
+                <h2 style={{paddingBottom:15, paddingTop:10}}>CRUD with REACT</h2>
+                <button style={{display:'inline-block' ,width:'50%', backgroundColor:'#686E85', color:'white', fontWeight:'bold'}} onClick={goToHome}>HOME</button>
+                <button style={{display: 'inline-block', width:'50%',backgroundColor:'#686E85', color:'white', fontWeight:'bold'}} onClick={goToSignUp}>SIGNUP</button>
+            </Header>
+    
+            <h1 style={{textAlign:'center', marginTop:10, fontWeight:'bold'}}>SIGN UP</h1>
             <form>
-                <label>
+                <SignUpLabel style={{fontWeight:'bold', textAlign:'center'}}>
                     Name:    
                     <input onChange={event => setName(event.target.value)} />
                     <br/>
@@ -47,12 +73,16 @@ function Home() {
                     <input onChange={event => setTelephone(event.target.value)} />
                     <br/>
                     dateOfBirth:
-                    <input onChange={event => setDateOfBirth(event.target.value)} />
+                    <input type="date" onChange={event => setDateOfBirth(event.target.value.toString())} />
                     <br/>
-                </label>
-                <input onClick={signUp} type="submit" value="Submit" />
+                </SignUpLabel>
+                <input style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'100%', backgroundColor:'#686E85', color:'white', fontWeight:'bold'}} onClick={signUp} type="submit" value="Submit" />
             </form>
-        </div>
+
+            <Footer>
+                <h2 style={{textAlign:'center', fontSize:'25px', fontWeight:'bold', color:'white', paddingTop:20}}>This application was made by Lucas Rodrigues Barboza</h2>
+            </Footer>
+        </Body>
     );
 
 }
