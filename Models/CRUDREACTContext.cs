@@ -20,6 +20,36 @@ namespace CRUDREACT.Models
             return new MySqlConnection(ConnectionString);
         }
 
+        public List<People> GetPeopleBySearch(MySqlParameter name)
+        {
+
+            List<People> list = new List<People>();
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM People WHERE name LIKE @searchName", conn);
+                cmd.Parameters.Add(name);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new People()
+                        {
+                            idPeople = Convert.ToInt32(reader["idPeople"]),
+                            name = reader["name"].ToString(),
+                            rg = reader["rg"].ToString(),
+                            cpf = reader["cpf"].ToString(),
+                            telephone = reader["telephone"].ToString(),
+                            dateOfBirth = Convert.ToDateTime(reader["dateOfBirth"])
+                        });
+                    }
+                }
+            }
+            return list;
+
+        }
+
         public void DeletePeople(MySqlParameter id)
         {
             using (MySqlConnection conn = GetConnection())

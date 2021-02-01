@@ -53,7 +53,7 @@ function Home() {
 
             }
         }
-        return fetch('people', data)
+        fetch('people', data)
             .then(response => response.json())  // promise
 
         address.map((a) => {
@@ -63,7 +63,7 @@ function Home() {
                     method: 'POST',
                     credentials: 'same-origin',
                     mode: 'same-origin',
-                    body: JSON.stringify({ idPeople: parseInt(a.idPeople), state: a.state.toString(), city: a.city.toString(), neighborhood: a.neighborhood.toString(), houseNumber: a.houseNumber.toString() }),
+                    body: JSON.stringify({ idPeople: parseInt(id), state: a.state.toString(), city: a.city.toString(), neighborhood: a.neighborhood.toString(), houseNumber: a.houseNumber.toString() }),
                     headers: {
 
                         'Content-Type': 'application/json',
@@ -77,29 +77,37 @@ function Home() {
                     method: 'PUT',
                     credentials: 'same-origin',
                     mode: 'same-origin',
-                    body: JSON.stringify({ idPeople: parseInt(a.idPeople), state: a.state.toString(), city: a.city.toString(), neighborhood: a.neighborhood.toString(), houseNumber: a.houseNumber.toString() }),
+                    body: JSON.stringify({ idAddress: parseInt(a.idAddress), state: a.state.toString(), city: a.city.toString(), neighborhood: a.neighborhood.toString(), houseNumber: a.houseNumber.toString() }),
                     headers: {
 
                         'Content-Type': 'application/json',
 
                     }
                 }
-                return fetch('address', data)
+                alert(a.state);
+                fetch('address', data)
                     .then(response => response.json())  // promise
             }
         })
 
-       
 
+        alert("Dados Atualizados");
+        history.push("/");
+        
     }
 
-    function deleteAddress(a) {
+   async function deleteAddress(a) {
 
         setAddress(address.filter(address => {
             if (address !== a) {
                 return address;
             }
         }));
+
+       if (a.idAddress !== null) {
+           await fetch('address/' + a.idAddress, { method: 'DELETE' });
+       }
+       alert("Address Deleted");
     }
 
     function goToHome() {
@@ -115,8 +123,30 @@ function Home() {
     function addAddress() {
         setAddress([...address, {idAddress: null, state: "", city: "", neighborhood: "", houseNumber: "" }]);
     }
- 
 
+    function onChangeState(e, index) {
+        let newArray = [...address];
+        newArray[index].state = e.target.value;
+        setAddress(newArray);
+    }
+
+    function onChangeHouseCity(e, index) {
+        let newArray = [...address];
+        newArray[index].city = e.target.value;
+        setAddress(newArray);
+    }
+
+    function onChangeNeighborhood(e, index) {
+        let newArray = [...address];
+        newArray[index].neighborhood = e.target.value;
+        setAddress(newArray);
+    }
+
+    function onChangeHouseNumber(e, index) {
+        let newArray = [...address];
+        newArray[index].houseNumber = e.target.value;
+        setAddress(newArray);
+    }
 
     return (
         <Body style={{ backgroundColor: '#BEC4E1' }}>
@@ -147,27 +177,27 @@ function Home() {
                 </SignUpLabel>
                
 
-            {address.map((a) => {
+            {address.map((a, index) => {
                 return (
                     <div style={{ textAlign: "center", backgroundColor: '#9A9EB3', width: '90%', display: 'block', marginLeft: 'auto', marginRight: 'auto', border: '2px solid black' }}>
                         <h1 style={{ textAlign: 'center', color: 'white' }}>ADDRESS</h1>
 
                         <SignUpLabel style={{ fontWeight: 'bold', textAlign: 'center' }}>
                             State:
-                        <input onChange={event => setName(event.target.value)} value={a.state} />
+                        <input onChange={event => onChangeState(event, index)} value={a.state} />
                             <br />
                          City:
-                        <input onChange={event => setRg(event.target.value)} value={a.city} />
+                        <input onChange={event => onChangeHouseCity(event, index)} value={a.city} />
                             <br />
                         Neighborhood:
-                        <input onChange={event => setCpf(event.target.value)} value={a.neighborhood} />
+                        <input onChange={event => onChangeNeighborhood(event, index)} value={a.neighborhood} />
                             <br />
                         Number:
-                        <input onChange={event => setTelephone(event.target.value)} value={a.houseNumber} />
+                        <input onChange={event => onChangeHouseNumber(event, index)} value={a.houseNumber} />
                             <br />
 
                         </SignUpLabel>
-                        <button style={{ display: 'inline-block', width: '50%', backgroundColor: '#686E85', color: 'white', fontWeight: 'bold' }} onClick={(a) => deleteAddress(a)}>REMOVE ADDRESS</button>
+                        <button style={{ display: 'inline-block', width: '50%', backgroundColor: '#686E85', color: 'white', fontWeight: 'bold' }} onClick={() => deleteAddress(a)}>REMOVE ADDRESS</button>
 
                     </div>
                 );
@@ -175,7 +205,7 @@ function Home() {
 
 
             <button style={{ display: 'inline-block', width: '50%', backgroundColor: '#686E85', color: 'white', fontWeight: 'bold' }} onClick={addAddress}>ADD ADDRESS</button>
-            <button style={{ display: 'inline-block', width: '50%', backgroundColor: '#686E85', color: 'white', fontWeight: 'bold' }} onClick={() => updatePeople} type="submit">SUBMIT</button>
+            <button style={{ display: 'inline-block', width: '50%', backgroundColor: '#686E85', color: 'white', fontWeight: 'bold' }} onClick={updatePeople}>SUBMIT</button>
 
           
             <Footer>

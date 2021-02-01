@@ -11,7 +11,9 @@ function Home(){
 
 
 
-    const [people, setPeople] = useState([])
+    const [people, setPeople] = useState([]);
+    const [searchName, setSearchName] = useState("");
+
     const history = createBrowserHistory({
         forceRefresh: true
     });
@@ -41,6 +43,13 @@ function Home(){
        
         history.push("/SignUp");
     }
+
+    async function getPeopleByName() {
+    
+        const response = await fetch('search/' + searchName, { method: 'GET' });
+        const data = await response.json();
+        setPeople(data);
+    }
  
   
     return (
@@ -50,10 +59,10 @@ function Home(){
                 <button style={{display:'inline-block' ,width:'50%', backgroundColor:'#686E85', color:'white', fontWeight:'bold'}} onClick={goToHome}>HOME</button>
                 <button style={{display: 'inline-block', width:'50%',backgroundColor:'#686E85', color:'white', fontWeight:'bold'}} onClick={goToSignUp}>SIGNUP</button>
             </Header>
-            <form>
-            <Search type="text" placeholder="Search for People" onChange={alert("Mudou")}></Search>
-            <input type="submit" style={{display:'block', marginLeft:'auto', marginRight: 'auto'}}></input>
-            </form>
+
+            <Search type="text" placeholder="Search for People" onChange={event => setSearchName(event.target.value)}></Search>
+            <button onClick={() => getPeopleByName()} style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', marginTop: 10 }} >Search</button>
+            
             <div>
                 <h1 style={{textAlign:'center', marginTop:10, fontWeight:'bold'}}>PEOPLE LIST</h1>
                 {people.map((p) => {
